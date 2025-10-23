@@ -3,6 +3,11 @@
 ## 📊 Visão Geral do Projeto
 Este projeto demonstra a aplicação de conceitos avançados de Engenharia de Dados no Power BI, transformando uma estrutura de dados centralizada e monolítica em um modelo dimensional otimizado (Star Schema). O foco principal é a análise de divergências de inventário em uma rede de farmácias.
 
+**Antes / Depois**
+
+<img width="400" height="200" alt="relacionamentosAntes" src="https://github.com/user-attachments/assets/f4e6a453-0bf6-43d6-b217-29892c9a2163" /> <img width="400" height="200" alt="relacionamentoDepois" src="https://github.com/user-attachments/assets/6453ff2b-90ff-454f-97b9-ebee9717401d" />
+
+
 ## 🏆 Prova de Performance: Otimização Mensurável
 
 A migração de uma tabela única para um modelo Star Schema não foi apenas uma boa prática, foi uma necessidade de performance. Utilizei o **Analisador de Desempenho** do Power BI para medir o impacto da otimização.
@@ -21,12 +26,16 @@ A migração de uma tabela única para um modelo Star Schema não foi apenas uma
 
 Essa otimização transformou um relatório lento em uma ferramenta de análise rápida e viável para o uso diário.
 
-![Gráfico de Performance](screenshots/04_grafico_performance.png)
+<img width="500" height="350" alt="grafico_performance" src="https://github.com/user-attachments/assets/0fe5f3de-9afb-401a-a2cc-d69ed1f35147" />
 
 Os dados brutos `.json` usados para esta análise estão disponíveis na pasta `/performance-data`.
 
 ## 🔄 Processo de Transformação de Dados
-Antes da modelagem, todos os dados estavam centralizados em uma única tabela com múltiplos JOINs aninhados diretamente na query principal. Isso causava:
+Antes da modelagem, todos os dados estavam centralizados em uma única tabela com múltiplos JOINs aninhados diretamente na query principal. 
+
+![antesMonolitica](https://github.com/user-attachments/assets/bbd20127-e5b8-44c8-856b-c2a4277060f8)
+
+**Isso causava:** 
 
 * Baixa performance no carregamento e atualização dos dados
 * Dificuldade de manutenção e debugging
@@ -48,6 +57,7 @@ Para solucionar isso, foi realizado um processo completo de ETL (Extração, Tra
 * Permite reuso de transformações
 
 ### 2. Tabelas Dimensionais (Modelo Star Schema)
+![depoisDimensoes](https://github.com/user-attachments/assets/579b9143-ba10-4785-9256-f76fc8d5af1b)
 
 **d_produto - Dimensão de Produtos**
 * Chave primária: COD INTERNO
@@ -69,7 +79,7 @@ Para solucionar isso, foi realizado um processo completo de ETL (Extração, Tra
 **d_calendario - Dimensão Temporal**
 * Gerada dinamicamente baseada no range de datas dos dados
 
-** Colunas úteis:**
+**Colunas úteis:**
 * Ano, Mês, Dia, Trimestre
 * Nome do mês, mês abreviado
 * Dia da semana, semana do ano
@@ -77,6 +87,8 @@ Para solucionar isso, foi realizado um processo completo de ETL (Extração, Tra
 * AnoMesTexto (formato visual)
 
 ### 3. Tabelas Fato
+![depoisFatos](https://github.com/user-attachments/assets/6bc10e16-0ad4-4639-ba9c-5b00f1ba9988)
+
 **f_inventario - Fato Principal**
 
 **- Combina dois eventos de inventário:**
@@ -109,9 +121,9 @@ Para solucionar isso, foi realizado um processo completo de ETL (Extração, Tra
 **Regra de Negócio:** Utiliza custo inicial quando disponível, senão custo contado
 
 * f_produto_sem_cadastro - Produtos Não Cadastrados
-* Identifica produtos contados mas sem registro no cadastro principal:
-* Útil para auditoria e correção de dados
-* Flag: STATUS PRODUTO = "Sem cadastro"
+	- Identifica produtos contados mas sem registro no cadastro principal:
+	- Útil para auditoria e correção de dados
+	- Flag: STATUS PRODUTO = "Sem cadastro"
 
 ## 🛠️ Técnicas de Power Query Aplicadas
 
@@ -120,7 +132,7 @@ Para solucionar isso, foi realizado um processo completo de ETL (Extração, Tra
 * m Substituição de valores nulos
 Table.ReplaceValue(null, 0, Replacer.ReplaceValue, {"COLUNA"})
 
-*  Normalização de texto
+* Normalização de texto
 Table.TransformColumns({{"COLUNA", Text.Proper, type text}})
 * Divisão de valores (centavos para reais)
 Table.TransformColumns({{"CUSTO", each _ / 100, type number}})
@@ -178,7 +190,7 @@ Table.TransformColumns({{"CUSTO", each _ / 100, type number}})
 * **Análise de Perdas e Sobras:** Identificação de padrões de divergência por produto, filial e período
 * **Acuracidade de Inventário:** Percentual de produtos sem divergência
 * **Impacto Financeiro:** Valor monetário das divergências
-* **Produtos Críticos:** Items com maior frequência de divergência
+* **Produtos Críticos:** Itens com maior frequência de divergência
 * **Performance por Filial:** Comparativo de acuracidade entre lojas
 * **Tendências Temporais:** Evolução das divergências ao longo dos ciclos
 
@@ -206,4 +218,4 @@ Este projeto demonstra a aplicação prática de **Engenharia de Dados no contex
 
 **Acesse o Dashboard Interativo** 
 
-(https://app.powerbi.com/view?r=eyJrIjoiYmRjYjRjY2MtN2E3Yi00Yjk1LWI4ZTgtYjNiNzZjMzkwMDExIiwidCI6ImYyOWVkNTkxLTBlNzAtNDQ5ZC05NDU3LTViZTBjNjQwYWY5NSJ9)
+https://app.powerbi.com/view?r=eyJrIjoiYmRjYjRjY2MtN2E3Yi00Yjk1LWI4ZTgtYjNiNzZjMzkwMDExIiwidCI6ImYyOWVkNTkxLTBlNzAtNDQ5ZC05NDU3LTViZTBjNjQwYWY5NSJ9
